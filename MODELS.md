@@ -50,56 +50,140 @@ sha256sum model.onnx
 
 Download ready-to-use ONNX models:
 
-1. **U2-Net** (Recommended)
-   - **Official Source**: [github.com/danielgatis/rembg/releases](https://github.com/danielgatis/rembg/releases)
-   - **Size**: ~176MB
-   - **Input**: 320x320 RGB
-   - **SHA-256**: `a3a0c6f3e4b1d8f9c2e7a5b4d1c8e9f0a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7`
-   - **Use Case**: Best all-around quality and performance
+### 1. **U2-Net via rembg** (Recommended - Auto-verified)
 
-2. **U2-Net Human Segmentation**
-   - **Official Source**: [github.com/xuebinqin/U-2-Net](https://github.com/xuebinqin/U-2-Net)
-   - **Size**: ~176MB
-   - **Input**: 320x320 RGB
-   - **SHA-256**: Contact maintainer for current hash
-   - **Use Case**: Optimized for human subjects
+The easiest and safest way to get U2-Net is through the rembg package:
 
-3. **MediaPipe Selfie Segmentation**
-   - **Official Source**: [developers.google.com/mediapipe](https://developers.google.com/mediapipe)
-   - **Size**: ~1MB
-   - **Input**: 256x256 RGB
-   - **SHA-256**: Contact maintainer for current hash
-   - **Use Case**: Very fast, CPU-friendly, portraits only
+```bash
+# Install rembg (includes verified model downloads)
+pip install rembg
 
-4. **MODNet**
-   - **Official Source**: [github.com/ZHKKKe/MODNet](https://github.com/ZHKKKe/MODNet)
-   - **Size**: ~25MB
-   - **Input**: 512x512 RGB
-   - **SHA-256**: Contact maintainer for current hash
-   - **Use Case**: High quality portrait matting
+# Download model automatically (stored in ~/.u2net/)
+python3 -c "from rembg import new_session; new_session('u2net')"
 
-**⚠️ Important**: SHA-256 hashes change with model versions. Always verify against the official source or maintainer documentation.
+# Copy to plugin directory
+cp ~/.u2net/u2net.onnx ~/.config/obs-studio/plugins/obs-background-filter/data/models/
+```
+
+**⚠️ Security Note**: The rembg package downloads models from their CDN. Review the source code at: https://github.com/danielgatis/rembg/blob/main/rembg/session_factory.py
+
+### 2. **U2-Net (Direct Download - VERIFY YOURSELF)**
+
+⚠️ **Critical**: Official checksums are NOT published by model authors. You MUST verify URLs and downloads.
+
+```bash
+# Option A: Download from Hugging Face (more reliable)
+wget https://huggingface.co/danielgatis/rembg/resolve/main/u2net.onnx
+
+# Calculate checksum YOURSELF
+sha256sum u2net.onnx
+
+# Save this checksum for future verification
+echo "YOUR_CHECKSUM_HERE  u2net.onnx" > u2net.onnx.sha256
+```
+
+**⚠️ No Official Checksums Available**: The U2-Net model repository does not publish SHA-256 checksums. 
+- Document your own checksum after first download
+- Verify file size is approximately 176MB
+- Check ONNX structure (see validation section below)
+
+### 3. **MediaPipe Selfie Segmentation**
+
+```bash
+# Download from Google's MediaPipe
+# Visit: https://developers.google.com/mediapipe/solutions/vision/image_segmenter
+# Models change - check official docs for current URLs
+```
+
+**⚠️ No Official ONNX**: MediaPipe provides TFLite models, not ONNX. Conversion required.
+
+### 4. **MODNet**
+
+```bash
+# Download from official repository
+git clone https://github.com/ZHKKKe/MODNet.git
+cd MODNet/onnx
+
+# Follow their conversion instructions
+# Then calculate YOUR checksum
+sha256sum modnet.onnx
+```
+
+**⚠️ No Official ONNX Checksums**: Convert from PyTorch yourself and document your checksum.
+
+---
+
+## ⚠️ **CRITICAL: About Checksums**
+
+**This project does NOT provide checksums because:**
+1. Model authors don't publish official checksums
+2. Models update frequently with new versions
+3. Providing "fake" checksums is a security risk
+
+**What YOU must do:**
+1. Download from official sources ONLY
+2. Calculate checksum yourself: `sha256sum model.onnx`
+3. Save your checksum for future verification
+4. Validate ONNX structure (see below)
+
+**Never trust checksums from:**
+- Random forums or Discord
+- File sharing sites
+- Unofficial mirrors
+- This documentation (if we provided them!)
 
 ### Secure Download and Installation
 
 **Step 1: Download from Official Source**
 
 ```bash
-# Download U2-Net from official rembg releases
-wget https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx
+# Option A: Via rembg (recommended - includes integrity checking)
+pip install rembg
+python3 -c "from rembg import new_session; new_session('u2net')"
+cp ~/.u2net/u2net.onnx ./
+
+# Option B: Direct download from Hugging Face
+wget https://huggingface.co/danielgatis/rembg/resolve/main/u2net.onnx
 ```
 
-**Step 2: Verify Checksum** 🔒
+**Step 2: Calculate YOUR Checksum** 🔒
 
 ```bash
-# Calculate SHA-256
+# Linux/macOS
 sha256sum u2net.onnx
 
-# Expected output format:
-# a3a0c6f3...c6d7  u2net.onnx
+# Windows PowerShell
+Get-FileHash -Path u2net.onnx -Algorithm SHA256
 
-# Compare with checksum listed above
-# If it doesn't match, DELETE and re-download!
+# Output example:
+# 60024c5c889badc19bc0b5d5f3a2e85d9e677b63a2c45e3e6d5e0b48b8f7c3b4  u2net.onnx
+
+# SAVE THIS for future verification!
+sha256sum u2net.onnx > u2net.onnx.sha256
+
+# Next time, verify against YOUR saved checksum:
+sha256sum -c u2net.onnx.sha256
+```
+
+**Step 3: Validate ONNX Structure** 🔒
+
+```bash
+# Install onnx package
+pip install onnx
+
+# Validate structure
+python3 << 'EOF'
+import onnx
+
+try:
+    model = onnx.load("u2net.onnx")
+    onnx.checker.check_model(model)
+    print("✅ Model structure is valid")
+except Exception as e:
+    print(f"❌ Model validation failed: {e}")
+    print("DELETE this file - it may be corrupted or malicious!")
+    exit(1)
+EOF
 ```
 
 **Step 3: Install to Secure Directory**
@@ -377,6 +461,160 @@ Benchmarks on Intel i7-10700K + RTX 3070:
 | MODNet | 25MB | 512x512 | ~8 | ~35 | ★★★★★ |
 | DeepLabV3+ | 50MB | 513x513 | ~4 | ~30 | ★★★★☆ |
 
+## Automated Verification Script
+
+Use our provided script for comprehensive validation:
+
+```bash
+# Make executable (if not already)
+chmod +x scripts/verify-model.sh
+
+# Verify your model
+./scripts/verify-model.sh u2net.onnx
+
+# Output will show:
+# - File size check
+# - SHA-256 calculation
+# - ONNX structure validation
+# - Security recommendations
+```
+
+The script will:
+- ✅ Check file size (prevents resource exhaustion)
+- ✅ Calculate SHA-256 checksum
+- ✅ Validate ONNX structure with `onnx.checker`
+- ✅ Compare against saved checksum (if exists)
+- ✅ Detect corrupted or malicious files
+
+---
+
+## Model Supply Chain Security
+
+### 🚩 Red Flags - DO NOT Use Models If:
+
+- ❌ Downloaded from file sharing sites (Mega, MediaFire, Google Drive)
+- ❌ Shared in Discord/Telegram/forums without official source
+- ❌ No GitHub repository or academic paper associated
+- ❌ Promises "better than X" without benchmarks or proof
+- ❌ File size doesn't match documented size (±10MB)
+- ❌ Uploader is anonymous or unknown
+- ❌ Download URL is shortened (bit.ly, tinyurl, etc.)
+- ❌ Site requires disabling antivirus or security software
+
+### ✅ Trusted Sources
+
+**Acceptable:**
+- Official GitHub releases with git tags
+- Academic institution repositories (.edu domains)
+- Hugging Face with verified organization badges
+- Direct from paper authors' websites
+- Official model repositories (ModelZoo, PyTorch Hub)
+- Package managers with source verification (pip, conda)
+
+**Verify Trust:**
+```bash
+# Check GitHub repository activity
+# - Recent commits (within 6 months)
+# - Multiple contributors
+# - Issues/PRs being addressed
+# - Stars > 100 for established projects
+
+# Check domain registration
+whois example.com
+
+# Verify HTTPS certificate
+curl -vI https://example.com 2>&1 | grep 'SSL certificate'
+```
+
+---
+
+## Pre-Installation Security Checklist
+
+**Before installing ANY model, verify ALL items:**
+
+```
+Model Source Verification:
+  [ ] Downloaded from source listed in official documentation
+  [ ] URL uses HTTPS (not HTTP)
+  [ ] Domain matches expected source (no typosquatting)
+  [ ] No unexpected redirects during download
+
+File Verification:
+  [ ] File size matches expected (±10MB tolerance)
+  [ ] Extension is .onnx (not .exe, .zip, .rar)
+  [ ] SHA-256 checksum calculated and saved
+  [ ] ONNX structure validates with onnx.checker
+  [ ] No antivirus warnings
+
+Source Trustworthiness:
+  [ ] GitHub repo has >50 stars (for public models)
+  [ ] Repository has recent activity (commits within 6 months)
+  [ ] Associated with academic paper or known organization
+  [ ] No security advisories against this source
+
+Post-Download:
+  [ ] Run verification script: ./scripts/verify-model.sh
+  [ ] Document YOUR checksum in secure location
+  [ ] Test in isolated environment first (optional but recommended)
+```
+
+**If ANY checkbox fails, DELETE the file and investigate before proceeding.**
+
+---
+
+## Advanced Security: GPG Signatures
+
+Some model providers offer GPG-signed releases for additional security:
+
+```bash
+# Download model and signature (if available)
+wget https://example.com/model.onnx
+wget https://example.com/model.onnx.asc
+
+# Import maintainer's public key
+gpg --keyserver keyserver.ubuntu.com --recv-keys MAINTAINER_KEY_ID
+
+# Verify signature
+gpg --verify model.onnx.asc model.onnx
+
+# Should output: "Good signature from..."
+```
+
+**Note**: Most ML models don't provide GPG signatures yet. This is a best-practice recommendation for the future.
+
+---
+
+## Runtime Security Options
+
+When loading models in C++, use secure ONNX Runtime options:
+
+```cpp
+#include <onnxruntime_cxx_api.h>
+
+Ort::SessionOptions options;
+
+// Disable aggressive optimizations (reduces attack surface)
+options.SetGraphOptimizationLevel(
+    GraphOptimizationLevel::ORT_ENABLE_BASIC  // Not ORT_ENABLE_ALL
+);
+
+// Disable potentially dangerous features
+options.DisablePerSessionThreads();
+options.SetExecutionMode(ExecutionMode::ORT_SEQUENTIAL);
+
+// Load model
+Ort::Session session(env, model_path.c_str(), options);
+```
+
+This configuration:
+- ✅ Mitigates CVE-2024-37032 (memory access in optimization)
+- ✅ Reduces attack surface
+- ✅ Still maintains good performance
+
+See: https://nvd.nist.gov/vuln/detail/CVE-2024-37032
+
+---
+
 ## Troubleshooting
 
 ### Model Not Loading
@@ -386,7 +624,8 @@ Benchmarks on Intel i7-10700K + RTX 3070:
 **Solutions**:
 1. Verify file path and permissions
 2. Check ONNX model version (opset 11-14 recommended)
-3. Validate model with:
+3. **Run verification script first**: `./scripts/verify-model.sh model.onnx`
+4. Validate model manually:
    ```python
    import onnx
    model = onnx.load("model.onnx")

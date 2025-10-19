@@ -50,12 +50,21 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DONNXRUNTIME_ROOT_DIR=$ONNXRUNTIME_ROOT_DIR
 make -j$(nproc)
 make install
 
-# Download and verify model
+# Download model safely (see MODELS.md for full instructions)
 mkdir -p ~/.config/obs-studio/plugins/obs-background-filter/data/models
-wget https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx \
+
+# Option A: Via rembg (recommended - includes verification)
+pip install rembg
+python3 -c "from rembg import new_session; new_session('u2net')"
+cp ~/.u2net/u2net.onnx ~/.config/obs-studio/plugins/obs-background-filter/data/models/
+
+# Option B: Direct download
+wget https://huggingface.co/danielgatis/rembg/resolve/main/u2net.onnx \
   -O ~/.config/obs-studio/plugins/obs-background-filter/data/models/u2net.onnx
-sha256sum ~/.config/obs-studio/plugins/obs-background-filter/data/models/u2net.onnx
-# Verify checksum matches MODELS.md!
+
+# CRITICAL: Verify the model!
+cd OBS-background-filter
+./scripts/verify-model.sh ~/.config/obs-studio/plugins/obs-background-filter/data/models/u2net.onnx
 ```
 
 ### Ubuntu/Debian
