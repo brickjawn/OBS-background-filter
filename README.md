@@ -213,3 +213,4 @@ GNU General Public License v2.0 - See [LICENSE](LICENSE) file.
 **Version**: 1.0 with Security Enhancements
 
 **Last Updated**: 2025-10-19
+# OBS-background-filter
