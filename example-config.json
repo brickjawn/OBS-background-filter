@@ -1,0 +1,162 @@
+{
+  "obs-background-filter": {
+    "version": "1.0.0",
+    "settings": {
+      "threshold": {
+        "default": 0.5,
+        "min": 0.0,
+        "max": 1.0,
+        "description": "Segmentation confidence threshold",
+        "recommendations": {
+          "high_quality": 0.3,
+          "balanced": 0.5,
+          "performance": 0.7
+        }
+      },
+      "blur_background": {
+        "default": false,
+        "description": "Apply Gaussian blur to background instead of removal"
+      },
+      "blur_amount": {
+        "default": 15,
+        "min": 1,
+        "max": 50,
+        "description": "Blur intensity (kernel size)"
+      },
+      "replace_background": {
+        "default": true,
+        "description": "Replace background with solid color"
+      },
+      "replacement_color": {
+        "default": "0xFF00FF00",
+        "description": "Background replacement color (ARGB hex)",
+        "presets": {
+          "green_screen": "0xFF00FF00",
+          "blue_screen": "0xFF0000FF",
+          "black": "0xFF000000",
+          "white": "0xFFFFFFFF",
+          "gray": "0xFF808080"
+        }
+      },
+      "smooth_edges": {
+        "default": true,
+        "description": "Apply edge smoothing for better quality"
+      },
+      "edge_smoothing": {
+        "default": 3,
+        "min": 1,
+        "max": 10,
+        "description": "Edge smoothing intensity"
+      }
+    },
+    "presets": {
+      "video_call_professional": {
+        "threshold": 0.5,
+        "replace_background": true,
+        "replacement_color": "0xFF808080",
+        "smooth_edges": true,
+        "edge_smoothing": 5,
+        "blur_background": false
+      },
+      "streaming_high_quality": {
+        "threshold": 0.4,
+        "replace_background": true,
+        "replacement_color": "0xFF00FF00",
+        "smooth_edges": true,
+        "edge_smoothing": 7,
+        "blur_background": false
+      },
+      "low_end_hardware": {
+        "threshold": 0.6,
+        "replace_background": true,
+        "replacement_color": "0xFF00FF00",
+        "smooth_edges": false,
+        "edge_smoothing": 1,
+        "blur_background": false
+      },
+      "artistic_blur": {
+        "threshold": 0.5,
+        "blur_background": true,
+        "blur_amount": 25,
+        "replace_background": false,
+        "smooth_edges": true,
+        "edge_smoothing": 5
+      }
+    },
+    "models": {
+      "u2net": {
+        "file": "u2net.onnx",
+        "input_size": [320, 320],
+        "description": "U2-Net: High quality general-purpose segmentation",
+        "recommended_for": ["high_quality", "general_use"],
+        "performance": "medium",
+        "size_mb": 176
+      },
+      "u2net_lite": {
+        "file": "u2net_lite.onnx",
+        "input_size": [320, 320],
+        "description": "U2-Net Lite: Faster variant with good quality",
+        "recommended_for": ["balanced", "streaming"],
+        "performance": "fast",
+        "size_mb": 4.7
+      },
+      "mediapipe": {
+        "file": "selfie_segmentation.onnx",
+        "input_size": [256, 256],
+        "description": "MediaPipe: Very lightweight for real-time use",
+        "recommended_for": ["real_time", "cpu_only", "low_end"],
+        "performance": "very_fast",
+        "size_mb": 1
+      },
+      "modnet": {
+        "file": "modnet.onnx",
+        "input_size": [512, 512],
+        "description": "MODNet: Optimized for portrait matting",
+        "recommended_for": ["portraits", "video_calls"],
+        "performance": "medium",
+        "size_mb": 25
+      }
+    },
+    "system_requirements": {
+      "minimum": {
+        "cpu": "Intel Core i5 or equivalent",
+        "ram": "4 GB",
+        "gpu": "Optional",
+        "obs_version": "28.0"
+      },
+      "recommended": {
+        "cpu": "Intel Core i7 or equivalent",
+        "ram": "8 GB",
+        "gpu": "NVIDIA GTX 1060 or equivalent with CUDA support",
+        "obs_version": "29.0+"
+      },
+      "optimal": {
+        "cpu": "Intel Core i9 or AMD Ryzen 9",
+        "ram": "16 GB",
+        "gpu": "NVIDIA RTX 3060 or better",
+        "obs_version": "30.0+"
+      }
+    },
+    "paths": {
+      "linux": {
+        "system_plugin": "/usr/lib/obs-plugins/",
+        "system_data": "/usr/share/obs/obs-plugins/obs-background-filter/",
+        "user_plugin": "~/.config/obs-studio/plugins/obs-background-filter/bin/",
+        "user_data": "~/.config/obs-studio/plugins/obs-background-filter/data/"
+      },
+      "windows": {
+        "system_plugin": "C:\\Program Files\\obs-studio\\obs-plugins\\64bit\\",
+        "system_data": "C:\\Program Files\\obs-studio\\data\\obs-plugins\\obs-background-filter\\",
+        "user_plugin": "%APPDATA%\\obs-studio\\plugins\\obs-background-filter\\bin\\",
+        "user_data": "%APPDATA%\\obs-studio\\plugins\\obs-background-filter\\data\\"
+      },
+      "macos": {
+        "system_plugin": "/Applications/OBS.app/Contents/PlugIns/",
+        "system_data": "/Applications/OBS.app/Contents/Resources/data/obs-plugins/obs-background-filter/",
+        "user_plugin": "~/Library/Application Support/obs-studio/plugins/obs-background-filter/bin/",
+        "user_data": "~/Library/Application Support/obs-studio/plugins/obs-background-filter/data/"
+      }
+    }
+  }
+}
+

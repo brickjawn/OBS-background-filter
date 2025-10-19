@@ -1,0 +1,60 @@
+# Clang-Format configuration for OBS Background Filter
+# Based on OBS Studio coding style
+
+BasedOnStyle: Google
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: ForIndentation
+ContinuationIndentWidth: 8
+
+# Line length
+ColumnLimit: 100
+
+# Braces
+BreakBeforeBraces: Linux
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Pointers and references
+PointerAlignment: Right
+DerivePointerAlignment: false
+
+# Spacing
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# Other
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignTrailingComments: true
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+
+# Includes
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '^<obs-'
+    Priority:        1
+  - Regex:           '^<(opencv2|cv)/'
+    Priority:        2
+  - Regex:           '^<onnx'
+    Priority:        3
+  - Regex:           '^<[a-z_]+>'
+    Priority:        4
+  - Regex:           '^<'
+    Priority:        5
+  - Regex:           '.*'
+    Priority:        6
+
+# Comments
+ReflowComments: true
+
