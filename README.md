@@ -9,7 +9,7 @@ An AI-powered background removal plugin for OBS Studio that uses deep learning t
 Malicious model files can compromise your system. Always:
 - ✅ Download from official sources only
 - ✅ Verify SHA-256 checksums (see [MODELS.md](MODELS.md))
-- ✅ Read our [Security Policy](SECURITY.md)
+- ✅ Read the [Security Policy](SECURITY.md)
 - ❌ Never use models from untrusted websites or users
 
 **📖 See [SECURITY.md](SECURITY.md) for complete security guidelines.**
@@ -208,9 +208,9 @@ GNU General Public License v2.0 - See [LICENSE](LICENSE) file.
 
 ---
 
-**Status**: ✅ Production-ready with enterprise-grade security
+**Status**: ✅ good to go!
 
-**Version**: 1.0 with Security Enhancements
+**Version**: 1.0
 
 **Last Updated**: 2025-10-19
 # OBS-background-filter
